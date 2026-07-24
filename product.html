@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Objet — AZ Store</title>
+<link rel="icon" href="logo.jpeg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="brand">
+      <img src="logo.jpeg" alt="AZ Store" class="logo">
+      <span class="brand-name">AZ<span>Store</span></span>
+    </a>
+    <div class="nav-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="searchInput" placeholder="Rechercher..." onclick="window.location.href='index.html'" readonly>
+    </div>
+    <nav class="nav-links">
+      <a href="index.html">Boutique</a>
+      <span id="navAuthSlot"></span>
+    </nav>
+    <button class="icon-btn" id="cartToggle" aria-label="Ouvrir le panier" title="Panier">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12L5 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+      <span class="cart-count" id="cartCount" style="display:none;">0</span>
+    </button>
+
+    <button class="icon-btn nav-toggle" id="mobileNavToggle" aria-label="Menu" title="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="nav-links-mobile" id="navLinksMobile">
+    <a href="index.html">Boutique</a>
+    <a href="checkout.html">Panier</a>
+    <a href="login.html">Se connecter</a>
+  </div>
+</header>
+
+<div class="breadcrumb">
+  <a href="index.html">Boutique</a>
+  <span>/</span>
+  <span id="crumbTitle">Chargement...</span>
+</div>
+
+<div class="product-detail" id="productDetail">
+  <!-- rempli par JS -->
+</div>
+
+<!-- Formulaire "Commande rapide" (modal léger) -->
+<div class="modal-overlay" id="quickOrderOverlay">
+  <div class="modal">
+    <h3>Commande rapide</h3>
+    <div class="form-msg" id="quickOrderMsg"></div>
+    <form id="quickOrderForm">
+      <div class="field">
+        <label for="qoContact">Pseudo Roblox ou e-mail de contact</label>
+        <input type="text" id="qoContact" required placeholder="TonPseudoRoblox">
+      </div>
+      <div class="field">
+        <label for="qoMessage">Message (optionnel)</label>
+        <textarea id="qoMessage" placeholder="Précise l'heure souhaitée, une remarque..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline btn-block" id="quickOrderCancel">Annuler</button>
+        <button type="submit" class="btn btn-primary btn-block" id="quickOrderSubmit">Envoyer la demande</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <p>&copy; 2026 AZ Store. Marketplace non affiliée à Roblox Corporation.</p>
+    <div class="footer-links">
+      <a href="login.html">Connexion</a>
+      <a href="register.html">Inscription</a>
+      <a href="checkout.html">Panier</a>
+    </div>
+  </div>
+</footer>
+
+<div class="cart-overlay" id="cartOverlay"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <h3>Ton panier</h3>
+    <button class="cart-close" id="cartClose" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none;">
+    <div class="cart-total-row">
+      <span>Total</span>
+      <span class="amount" id="cartTotalAmount">0.00 €</span>
+    </div>
+    <a href="checkout.html" class="btn btn-primary btn-block">Passer la commande</a>
+  </div>
+</aside>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="js/supabase.js"></script>
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const productId = params.get("id");
+  let currentProduct = null;
+
+  function whatsappLink(p) {
+    const text = encodeURIComponent(
+      `Bonjour AZ Store, je suis intéressé(e) par : ${p.title} (${formatPrice(p.price)}). Merci de me contacter.`
+    );
+    return `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${text}`;
+  }
+
+  async function loadProduct() {
+    const wrap = document.getElementById("productDetail");
+    if (!productId) {
+      wrap.innerHTML = `<p>Objet introuvable. <a href="index.html" style="color:var(--green-neon)">Retour à la boutique</a></p>`;
+      return;
+    }
+    const p = await Products.fetchOne(productId);
+    if (!p) {
+      wrap.innerHTML = `<p>Objet introuvable. <a href="index.html" style="color:var(--green-neon)">Retour à la boutique</a></p>`;
+      return;
+    }
+    currentProduct = p;
+    document.title = `${p.title} — AZ Store`;
+    document.getElementById("crumbTitle").textContent = p.title;
+
+    wrap.innerHTML = `
+      <div class="pd-visual ${p.img_class || 'grad-green'}">
+        ${!p.in_stock ? `<span class="card-badge out" style="position:absolute; top:16px; left:16px;">Rupture</span>` : (p.badge ? `<span class="card-badge" style="position:absolute; top:16px; left:16px;">${escapeHtml(p.badge)}</span>` : "")}
+        ${getIcon(p.icon)}
+      </div>
+      <div class="pd-info">
+        <span class="card-category">${escapeHtml(p.category)} &middot; ${escapeHtml(p.game)}</span>
+        <h1>${escapeHtml(p.title)}</h1>
+        <div class="pd-price-row">
+          <span class="now">${formatPrice(p.price)}</span>
+          ${p.old_price ? `<span class="old">${formatPrice(p.old_price)}</span>` : ""}
+        </div>
+        <p class="pd-desc">${escapeHtml(p.description || "Aucune description fournie pour cet objet.")}</p>
+        <div class="pd-meta">
+          <div class="pd-meta-item"><span class="label">Région</span><span class="val">${escapeHtml(p.region || "Global")}</span></div>
+          <div class="pd-meta-item"><span class="label">Disponibilité</span><span class="val">${p.in_stock ? "En stock" : "Rupture de stock"}</span></div>
+        </div>
+        <div class="pd-actions">
+          <button class="btn btn-primary" id="addToCartBtn" ${!p.in_stock ? "disabled" : ""}>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12L5 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+            Ajouter au panier
+          </button>
+          <button class="btn btn-outline" id="quickOrderBtn" ${!p.in_stock ? "disabled" : ""}>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+            Commande rapide
+          </button>
+          <a href="${whatsappLink(p)}" target="_blank" rel="noopener" class="btn btn-outline" style="${!p.in_stock ? 'pointer-events:none; opacity:.5;' : ''}">
+            <svg class="whatsapp-svg" viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.1-1.6-.8-1.9-.9-.2-.1-.4-.1-.6.1-.2.3-.7.9-.8 1-.2.2-.3.2-.5.1-.3-.1-1.2-.4-2.2-1.4-.8-.7-1.4-1.6-1.5-1.9-.2-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.4 0-.5-.1-.1-.6-1.4-.8-2-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.4 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.6-.7 1.9-1.3.2-.6.2-1.1.2-1.3 0-.1-.2-.2-.4-.3ZM12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.3A10 10 0 1 0 12 2Z"/></svg>
+            Commander sur WhatsApp
+          </a>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("addToCartBtn")?.addEventListener("click", () => {
+      Cart.add(p);
+      showToast("Ajouté au panier");
+    });
+    document.getElementById("quickOrderBtn")?.addEventListener("click", () => {
+      document.getElementById("quickOrderOverlay").classList.add("open");
+    });
+  }
+
+  document.getElementById("quickOrderCancel").addEventListener("click", () => {
+    document.getElementById("quickOrderOverlay").classList.remove("open");
+  });
+
+  document.getElementById("quickOrderForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById("quickOrderMsg");
+    const submitBtn = document.getElementById("quickOrderSubmit");
+    msg.className = "form-msg";
+
+    const contact = document.getElementById("qoContact").value.trim();
+    const note = document.getElementById("qoMessage").value.trim();
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Envoi...";
+
+    try {
+      // Envoi de la demande par e-mail via EmailJS
+      // (nécessite d'avoir renseigné js/config.js -> SITE_CONFIG.emailjs)
+      await emailjs.send(
+        SITE_CONFIG.emailjs.serviceId,
+        SITE_CONFIG.emailjs.templateId,
+        {
+          product_title: currentProduct.title,
+          price: formatPrice(currentProduct.price),
+          customer_contact: contact,
+          message: note || "Aucun message."
+        },
+        { publicKey: SITE_CONFIG.emailjs.publicKey }
+      );
+
+      // Enregistrement de la commande dans Supabase si l'utilisateur est connecté
+      const user = await Auth.getUser();
+      await supabaseClient.from("orders").insert({
+        user_id: user ? user.id : null,
+        product_id: currentProduct.id,
+        product_title: currentProduct.title,
+        amount: currentProduct.price,
+        status: "pending",
+        payment_method: "commande_rapide",
+        contact
+      });
+
+      msg.textContent = "Demande envoyée avec succès. Nous te contactons rapidement.";
+      msg.classList.add("show", "success");
+      setTimeout(() => {
+        document.getElementById("quickOrderOverlay").classList.remove("open");
+        msg.className = "form-msg";
+        document.getElementById("quickOrderForm").reset();
+      }, 1500);
+    } catch (err) {
+      console.error(err);
+      msg.textContent = "Impossible d'envoyer la demande pour le moment. Réessaie ou utilise WhatsApp.";
+      msg.classList.add("show", "error");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Envoyer la demande";
+    }
+  });
+
+  loadProduct();
+</script>
+</body>
+</html>

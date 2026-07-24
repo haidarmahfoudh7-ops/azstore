@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commande — AZ Store</title>
+<link rel="icon" href="logo.jpeg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="brand">
+      <img src="logo.jpeg" alt="AZ Store" class="logo">
+      <span class="brand-name">AZ<span>Store</span></span>
+    </a>
+    <nav class="nav-links" style="margin-left:auto;">
+      <a href="index.html">Boutique</a>
+      <span id="navAuthSlot"></span>
+    </nav>
+
+    <button class="icon-btn nav-toggle" id="mobileNavToggle" aria-label="Menu" title="Menu" style="margin-left:auto;">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="nav-links-mobile" id="navLinksMobile">
+    <a href="index.html">Boutique</a>
+    <a href="login.html">Se connecter</a>
+  </div>
+</header>
+
+<div class="breadcrumb">
+  <a href="index.html">Boutique</a>
+  <span>/</span>
+  <span>Commande</span>
+</div>
+
+<div class="checkout-wrap">
+  <div>
+    <!-- Articles -->
+    <div class="checkout-section">
+      <h3>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12L5 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+        Ton panier
+      </h3>
+      <div id="checkoutItems"></div>
+    </div>
+
+    <!-- Coordonnées -->
+    <div class="checkout-section">
+      <h3>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 1 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
+        Tes coordonnées
+      </h3>
+      <div class="field">
+        <label for="contactPseudo">Pseudo Roblox</label>
+        <input type="text" id="contactPseudo" required placeholder="TonPseudoRoblox">
+      </div>
+      <div class="field">
+        <label for="contactEmail">E-mail</label>
+        <input type="email" id="contactEmail" required placeholder="toi@exemple.com">
+      </div>
+    </div>
+
+    <!-- Booking : créneau de livraison -->
+    <div class="checkout-section">
+      <h3>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Créneau de livraison
+      </h3>
+      <p style="margin-bottom:14px; font-size:13px;">Choisis un jour et une heure où tu seras connecté(e) à Roblox pour recevoir ta commande.</p>
+      <div class="modal-grid">
+        <div class="field full" style="margin-bottom:0;">
+          <label for="bookingDate">Date</label>
+          <input type="date" id="bookingDate" required>
+        </div>
+        <div class="field full" style="margin-bottom:0;">
+          <label for="bookingTime">Heure</label>
+          <input type="time" id="bookingTime" required>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paiement -->
+    <div class="checkout-section">
+      <h3>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        Méthode de paiement
+      </h3>
+      <div class="payment-options" id="paymentOptions">
+        <label class="payment-option" data-value="whatsapp">
+          <input type="radio" name="payment" value="whatsapp" checked>
+          <svg class="whatsapp-svg" viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.1-1.6-.8-1.9-.9-.2-.1-.4-.1-.6.1-.2.3-.7.9-.8 1-.2.2-.3.2-.5.1-.3-.1-1.2-.4-2.2-1.4-.8-.7-1.4-1.6-1.5-1.9-.2-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.3-.4.1-.2 0-.4 0-.5-.1-.1-.6-1.4-.8-2-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.4 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.6-.7 1.9-1.3.2-.6.2-1.1.2-1.3 0-.1-.2-.2-.4-.3ZM12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.3A10 10 0 1 0 12 2Z"/></svg>
+          <div class="po-info">
+            <div class="po-title">WhatsApp</div>
+            <div class="po-sub">Finalise la commande directement avec nous</div>
+          </div>
+        </label>
+        <label class="payment-option" data-value="carte">
+          <input type="radio" name="payment" value="carte">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          <div class="po-info">
+            <div class="po-title">Carte bancaire</div>
+            <div class="po-sub">Paiement sécurisé par carte</div>
+          </div>
+        </label>
+        <label class="payment-option" data-value="paypal">
+          <input type="radio" name="payment" value="paypal">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17h4l2-9H9a3 3 0 0 0 0 6h1"/><path d="M13 8h3a3 3 0 0 1 0 6h-2l-1 3"/></svg>
+          <div class="po-info">
+            <div class="po-title">PayPal</div>
+            <div class="po-sub">Paiement via ton compte PayPal</div>
+          </div>
+        </label>
+        <label class="payment-option" data-value="crypto">
+          <input type="radio" name="payment" value="crypto">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.5 9h3.2a1.8 1.8 0 0 1 0 3.6H9.5m0-3.6V15m0-6V7.5m0 9V15m0 0h3.5a1.8 1.8 0 0 0 0-3.6"/></svg>
+          <div class="po-info">
+            <div class="po-title">Crypto-monnaie</div>
+            <div class="po-sub">USDT, Bitcoin, etc.</div>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Résumé -->
+  <div class="summary-box">
+    <h3 style="margin-bottom:16px;">Résumé</h3>
+    <div class="summary-item"><span>Sous-total</span><span id="sumSubtotal">0.00 €</span></div>
+    <div class="summary-item"><span>Frais</span><span>0.00 €</span></div>
+    <div class="summary-divider"></div>
+    <div class="summary-total"><span>Total</span><span class="amount" id="sumTotal">0.00 €</span></div>
+    <div class="form-msg" id="checkoutMsg"></div>
+    <button class="btn btn-primary btn-block" id="confirmOrderBtn">Confirmer la commande</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script>
+  function renderCheckoutItems() {
+    const items = Cart.getAll();
+    const wrap = document.getElementById("checkoutItems");
+    if (items.length === 0) {
+      wrap.innerHTML = `<p>Ton panier est vide. <a href="index.html" style="color:var(--green-neon)">Retour à la boutique</a></p>`;
+      document.getElementById("confirmOrderBtn").disabled = true;
+      return;
+    }
+    wrap.innerHTML = items.map(i => `
+      <div class="cart-item">
+        <div class="cart-item-visual ${i.img_class || 'grad-green'}">${getIcon(i.icon)}</div>
+        <div class="cart-item-info">
+          <div class="title">${escapeHtml(i.title)}</div>
+          <div class="price">${formatPrice(i.price)} &times; ${i.qty}</div>
+        </div>
+      </div>
+    `).join("");
+
+    const total = Cart.total();
+    document.getElementById("sumSubtotal").textContent = formatPrice(total);
+    document.getElementById("sumTotal").textContent = formatPrice(total);
+  }
+
+  document.querySelectorAll(".payment-option").forEach(opt => {
+    opt.addEventListener("click", () => {
+      document.querySelectorAll(".payment-option").forEach(o => o.classList.remove("selected"));
+      opt.classList.add("selected");
+      opt.querySelector("input").checked = true;
+    });
+  });
+  document.querySelector(".payment-option").classList.add("selected");
+
+  document.getElementById("confirmOrderBtn").addEventListener("click", async () => {
+    const msg = document.getElementById("checkoutMsg");
+    msg.className = "form-msg";
+
+    const pseudo = document.getElementById("contactPseudo").value.trim();
+    const email = document.getElementById("contactEmail").value.trim();
+    const date = document.getElementById("bookingDate").value;
+    const time = document.getElementById("bookingTime").value;
+    const payment = document.querySelector('input[name="payment"]:checked')?.value;
+    const items = Cart.getAll();
+
+    if (!pseudo || !email || !date || !time) {
+      msg.textContent = "Merci de remplir tous les champs (coordonnées + créneau).";
+      msg.classList.add("show", "error");
+      return;
+    }
+    if (items.length === 0) {
+      msg.textContent = "Ton panier est vide.";
+      msg.classList.add("show", "error");
+      return;
+    }
+
+    const btn = document.getElementById("confirmOrderBtn");
+    btn.disabled = true;
+    btn.textContent = "Confirmation...";
+
+    try {
+      const user = await Auth.getUser();
+      const rows = items.map(i => ({
+        user_id: user ? user.id : null,
+        product_id: i.id,
+        product_title: i.title,
+        amount: i.price * i.qty,
+        status: "pending",
+        payment_method: payment,
+        contact: `${pseudo} (${email}) — créneau: ${date} ${time}`
+      }));
+
+      const { error } = await supabaseClient.from("orders").insert(rows);
+      if (error) throw error;
+
+      Cart.clear();
+      msg.textContent = "Commande enregistrée ! Nous te contactons au créneau choisi.";
+      msg.classList.add("show", "success");
+
+      if (payment === "whatsapp") {
+        const text = encodeURIComponent(
+          `Bonjour AZ Store, je viens de passer commande (${items.map(i => i.title).join(", ")}) pour un total de ${formatPrice(Cart.total() || items.reduce((s,i)=>s+i.price*i.qty,0))}. Créneau souhaité : ${date} ${time}. Pseudo : ${pseudo}.`
+        );
+        setTimeout(() => window.open(`https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${text}`, "_blank"), 800);
+      }
+
+      setTimeout(() => { window.location.href = "index.html"; }, 2500);
+    } catch (err) {
+      console.error(err);
+      msg.textContent = "Une erreur est survenue. Réessaie ou contacte-nous sur WhatsApp.";
+      msg.classList.add("show", "error");
+      btn.disabled = false;
+      btn.textContent = "Confirmer la commande";
+    }
+  });
+
+  renderCheckoutItems();
+  // Date minimum = aujourd'hui
+  document.getElementById("bookingDate").min = new Date().toISOString().split("T")[0];
+</script>
+</body>
+</html>

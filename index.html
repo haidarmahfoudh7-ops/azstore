@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AZ Store — Objets Roblox, Robux &amp; Gamepass</title>
+<meta name="description" content="AZ Store : achète des objets Limited, des Robux et des Gamepass Roblox en toute sécurité.">
+<link rel="icon" href="logo.jpeg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===================== NAVBAR ===================== -->
+<header class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="brand">
+      <img src="logo.jpeg" alt="AZ Store" class="logo">
+      <span class="brand-name">AZ<span>Store</span></span>
+    </a>
+
+    <div class="nav-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="text" id="searchInput" placeholder="Rechercher un objet, un Gamepass...">
+    </div>
+
+    <nav class="nav-links">
+      <a href="index.html">Boutique</a>
+      <a href="checkout.html">Panier</a>
+      <span id="navAuthSlot"></span>
+    </nav>
+
+    <button class="icon-btn" id="cartToggle" aria-label="Ouvrir le panier" title="Panier">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12L5 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+      <span class="cart-count" id="cartCount" style="display:none;">0</span>
+    </button>
+
+    <button class="icon-btn nav-toggle" id="mobileNavToggle" aria-label="Menu" title="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="nav-links-mobile" id="navLinksMobile">
+    <a href="index.html">Boutique</a>
+    <a href="checkout.html">Panier</a>
+    <a href="login.html">Se connecter</a>
+  </div>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <div>
+    <span class="hero-eyebrow">
+      <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/></svg>
+      Livraison rapide &middot; Paiement sécurisé
+    </span>
+    <h1>Tous tes objets <span class="accent">Roblox</span> préférés, au même endroit.</h1>
+    <p class="lead">Limited, Dominus, Robux et Gamepass — sélectionnés, vérifiés et livrés rapidement par AZ Store.</p>
+    <div class="hero-actions">
+      <a href="#catalogue" class="btn btn-primary">
+        Voir le catalogue
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="register.html" class="btn btn-outline">Créer un compte</a>
+    </div>
+  </div>
+
+  <div class="spotlight">
+    <div class="spotlight-label">Objet en vedette</div>
+    <div class="spotlight-visual grad-gold">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 2 3 7v6c0 5 4 8.5 9 9 5-.5 9-4 9-9V7l-9-5Z"/><path d="M8 11h8M8 15h5"/></svg>
+    </div>
+    <div class="spotlight-title">Dominus Empyreus</div>
+    <div class="spotlight-price">
+      <span class="now">899.00 €</span>
+      <span class="old">1199.00 €</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FILTRES ===================== -->
+<div id="catalogue"></div>
+<div class="filters-bar" id="categoryChips">
+  <!-- généré par js/products.js -->
+</div>
+
+<!-- ===================== GRID ===================== -->
+<div class="section-title">
+  <h2>Catalogue</h2>
+  <span class="count" id="resultCount"></span>
+</div>
+<div class="products-grid" id="productsGrid">
+  <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+</div>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="footer-inner">
+    <p>&copy; 2026 AZ Store. Marketplace non affiliée à Roblox Corporation.</p>
+    <div class="footer-links">
+      <a href="login.html">Connexion</a>
+      <a href="register.html">Inscription</a>
+      <a href="checkout.html">Panier</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ===================== CART DRAWER ===================== -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <h3>Ton panier</h3>
+    <button class="cart-close" id="cartClose" aria-label="Fermer">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none;">
+    <div class="cart-total-row">
+      <span>Total</span>
+      <span class="amount" id="cartTotalAmount">0.00 €</span>
+    </div>
+    <a href="checkout.html" class="btn btn-primary btn-block">Passer la commande</a>
+  </div>
+</aside>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+</body>
+</html>
